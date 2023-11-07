@@ -84,8 +84,8 @@ class _RegisterViewState extends State<RegisterView> {
                               email: email,
                               password: password,
                             );
-                            FirebaseAuth.instance.currentUser!.emailVerified ==
-                                true;
+                            // FirebaseAuth.instance.currentUser!.emailVerified ==
+                            //     true;
                             showAlertDialog(
                                 context, 'Success', 'User registered!');
                           } on FirebaseAuthException catch (e) {

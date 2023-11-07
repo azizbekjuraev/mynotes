@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../utils/show_alert_dialog.dart';
 import '../firebase_options.dart';
-import '../views/register_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -35,93 +34,90 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     const height = SizedBox(
-      height: 15,
+      height: 20,
     );
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Login'),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Login'),
+            height,
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Email',
+              ),
+              keyboardType: TextInputType.emailAddress,
+              controller: _email,
+              enableSuggestions: false,
+              autocorrect: false,
+            ),
+            height,
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Password',
+              ),
+              controller: _password,
+              enableSuggestions: false,
+              autocorrect: false,
+              obscureText: true,
+            ),
+            height,
+            Column(
+              children: [
+                TextButton(
+                  child: const Text('Login'),
+                  onPressed: () async {
+                    try {
+                      final email = _email.text;
+                      final password = _password.text;
+                      final userCredentials = await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      print(userCredentials);
+
+                      showAlertDialog(context, 'Success',
+                          'Redirecting to verification page...',
+                          showProgress: true);
+                      Future.delayed(const Duration(seconds: 1), () {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user?.emailVerified == true) {
+                          Navigator.pushNamed(context, './notes-view/');
+                        } else {
+                          Navigator.pushNamed(context, './verify-email/');
+                        }
+                      });
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'user-not-found') {
+                        showAlertDialog(context, 'Error', 'User not found!');
+                      } else if (e.code == 'wrong-password') {
+                        showAlertDialog(context, 'Error',
+                            'Your password is incorrect, try again!');
+                      } else if (e.code == 'network-request-failed') {
+                        showAlertDialog(context, 'Network Request Failed.',
+                            'You do not have a proper network connection.');
+                      } else if (e.code == 'email-already-in-use') {
+                        showAlertDialog(context, "Error",
+                            'The email address is already in use by another account.');
+                      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+                        showAlertDialog(
+                            context, "Error", "Register first, then log in!");
+                      }
+                    }
+                  },
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, './register/');
+                    },
+                    child: const Text('Not registered yet? Register here!'))
+              ],
+            )
+          ],
         ),
-        body: FutureBuilder(
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Login'),
-                      height,
-                      TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                        controller: _email,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                      ),
-                      height,
-                      TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                        ),
-                        controller: _password,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        obscureText: true,
-                      ),
-                      height,
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              TextButton(
-                                child: const Text('Login'),
-                                onPressed: () async {
-                                  try {
-                                    showAlertDialog(
-                                        context, 'Success', 'User logged in!');
-                                  } on FirebaseAuthException catch (e) {
-                                    if (e.code == 'user-not-found') {
-                                      showAlertDialog(
-                                          context, 'Error', 'User not found!');
-                                    } else if (e.code == 'wrong-password') {
-                                      showAlertDialog(context, 'Error',
-                                          'You password is incorrect, try again!');
-                                    } else if (e.code ==
-                                        'network-request-failed') {
-                                      showAlertDialog(
-                                          context,
-                                          'Network Request Failed.',
-                                          'You do not have a proper network connection.');
-                                    }
-                                  }
-                                },
-                              ),
-                              TextButton(
-                                  onPressed: () async {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RegisterView()));
-                                  },
-                                  child: const Text('Register'))
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              default:
-                return const Text('Loading...');
-            }
-          },
-        ));
+      ),
+    );
   }
 }
