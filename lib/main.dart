@@ -31,44 +31,39 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
+    return FutureBuilder(
+      future: Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              // final user = FirebaseAuth.instance.currentUser;
-              // if (user?.emailVerified ?? false) {
-              //   print(user);
-              //   return const Text('done');
-              // } else {
-              //   return Column(
-              //     children: [
-              //       const Text('Please verify your email address.'),
-              //       TextButton(
-              //         onPressed: () {
-              //           Navigator.of(context).push(
-              //             MaterialPageRoute(
-              //               builder: (context) => const VerifyEmailView(),
-              //             ),
-              //           );
-              //         },
-              //         child: const Text('Verify Email'),
-              //       ),
-              //     ],
-              //   );
-              // }
-              return const LoginView();
-            default:
-              return const Text('Loading...');
-          }
-        },
-      ),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            // final user = FirebaseAuth.instance.currentUser;
+            // if (user?.emailVerified ?? false) {
+            //   print(user);
+            //   return const Text('done');
+            // } else {
+            //   return Column(
+            //     children: [
+            //       const Text('Please verify your email address.'),
+            //       TextButton(
+            //         onPressed: () {
+            //           Navigator.of(context).push(
+            //             MaterialPageRoute(
+            //               builder: (context) => const VerifyEmailView(),
+            //             ),
+            //           );
+            //         },
+            //         child: const Text('Verify Email'),
+            //       ),
+            //     ],
+            //   );
+            // }
+            return const LoginView();
+          default:
+            return const CircularProgressIndicator();
+        }
+      },
     );
   }
 }

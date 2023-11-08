@@ -111,7 +111,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                 );
               default:
-                return const Text('Loading...');
+                return const CircularProgressIndicator();
             }
           },
         ));

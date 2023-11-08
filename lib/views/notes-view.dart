@@ -49,11 +49,11 @@ class _NotesViewState extends State<NotesView> {
 
   @override
   Widget build(BuildContext context) {
-    final redShadow = BoxShadow(
+    const redShadow = BoxShadow(
       color: Colors.red,
       offset: Offset(3, 3),
     );
-    final oliveShadow = BoxShadow(
+    const oliveShadow = BoxShadow(
       color: Colors.lime,
       offset: Offset(-1, 0),
       blurRadius: 0.4,
@@ -64,7 +64,7 @@ class _NotesViewState extends State<NotesView> {
         title: const Text('Notes'),
       ),
       body: notes.isEmpty
-          ? Center(
+          ? const Center(
               child: Text(
                 'You do not have notes yet!',
                 style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
@@ -74,23 +74,26 @@ class _NotesViewState extends State<NotesView> {
               itemCount: notes.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin: EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.lightBlue,
-                      width: 2,
+                      width: 1,
                     ),
-                    boxShadow: [redShadow, oliveShadow],
+                    boxShadow: const [
+                      redShadow,
+                      oliveShadow,
+                    ],
                   ),
                   child: ListTile(
                     title: Text(
-                      "${notes[index].title}",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      notes[index].title,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      "${notes[index].content}",
-                      style: TextStyle(height: 2),
+                      notes[index].content,
+                      style: const TextStyle(height: 2),
                     ),
                   ),
                 );
@@ -103,7 +106,7 @@ class _NotesViewState extends State<NotesView> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: const Text("Add a New Note"),
-                content: Container(
+                content: SizedBox(
                   width: 300,
                   height: 200,
                   child: Column(
@@ -115,7 +118,7 @@ class _NotesViewState extends State<NotesView> {
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       TextField(
                         controller: _contentController,
                         decoration: const InputDecoration(
@@ -123,20 +126,20 @@ class _NotesViewState extends State<NotesView> {
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           ElevatedButton(
                             onPressed: _saveNote,
-                            child: Text('Save'),
+                            child: const Text('Save'),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('Cancel'),
+                            child: const Text('Cancel'),
                           ),
                         ],
                       ),

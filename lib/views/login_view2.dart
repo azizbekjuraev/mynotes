@@ -37,6 +37,9 @@ class _LoginViewState extends State<LoginView> {
       height: 20,
     );
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
