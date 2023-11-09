@@ -86,8 +86,11 @@ class _RegisterViewState extends State<RegisterView> {
                             );
                             // FirebaseAuth.instance.currentUser!.emailVerified ==
                             //     true;
-                            showAlertDialog(
-                                context, 'Success', 'User registered!');
+                            showAlertDialog(context, 'Success',
+                                'User registered! Redirecting to verification page...');
+                            Future.delayed(const Duration(seconds: 3), () {
+                              Navigator.pushNamed(context, './verify-email/');
+                            });
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'network-request-failed') {
                               showAlertDialog(

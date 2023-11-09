@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../utils/show_alert_dialog.dart';
-import '../firebase_options.dart';
+import 'package:provider/provider.dart';
+import '../data/user_data.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -79,10 +79,16 @@ class _LoginViewState extends State<LoginView> {
                         email: email,
                         password: password,
                       );
+                      print('user data');
                       print(userCredentials);
+                      // create a userdata obj
+                      final userData = UserData(userCredentials.user?.email,
+                          userCredentials.user?.displayName);
 
-                      showAlertDialog(context, 'Success',
-                          'Redirecting to verification page...',
+                      // use provider to update the user data
+                      context.read<UserDataProvider>().updateUserData(userData);
+
+                      showAlertDialog(context, 'Success', 'Logged in',
                           showProgress: true);
                       Future.delayed(const Duration(seconds: 1), () {
                         final user = FirebaseAuth.instance.currentUser;

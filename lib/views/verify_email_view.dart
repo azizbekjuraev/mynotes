@@ -28,7 +28,9 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 print(user);
                 showAlertDialog(context, 'Success',
                     'Verification link has been sent to your email address!');
-                print(user);
+                Future.delayed(const Duration(seconds: 30), () {
+                  Navigator.pushNamed(context, './login/');
+                });
               } catch (e) {
                 showAlertDialog(context, 'Error', "$e");
               }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Import dart:ui for BoxShadow
+import "navbar_view.dart";
 
 class Note {
   final String title;
@@ -60,98 +61,98 @@ class _NotesViewState extends State<NotesView> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notes'),
-      ),
-      body: notes.isEmpty
-          ? const Center(
-              child: Text(
-                'You do not have notes yet!',
-                style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+        appBar: AppBar(
+          title: Text('Notes'),
+        ),
+        body: notes.isEmpty
+            ? const Center(
+                child: Text(
+                  'You do not have notes yet!',
+                  style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
+                ),
+              )
+            : ListView.builder(
+                itemCount: notes.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.lightBlue,
+                        width: 1,
+                      ),
+                      boxShadow: const [
+                        redShadow,
+                        oliveShadow,
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        notes[index].title,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        notes[index].content,
+                        style: const TextStyle(height: 2),
+                      ),
+                    ),
+                  );
+                },
               ),
-            )
-          : ListView.builder(
-              itemCount: notes.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.lightBlue,
-                      width: 1,
-                    ),
-                    boxShadow: const [
-                      redShadow,
-                      oliveShadow,
-                    ],
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      notes[index].title,
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      notes[index].content,
-                      style: const TextStyle(height: 2),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Add a New Note"),
+                  content: SizedBox(
+                    width: 300,
+                    height: 200,
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _titleController,
+                          decoration: const InputDecoration(
+                            labelText: 'Title',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextField(
+                          controller: _contentController,
+                          decoration: const InputDecoration(
+                            labelText: 'Content',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ElevatedButton(
+                              onPressed: _saveNote,
+                              child: const Text('Save'),
+                            ),
+                            const SizedBox(width: 10),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 );
               },
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Add a New Note"),
-                content: SizedBox(
-                  width: 300,
-                  height: 200,
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _titleController,
-                        decoration: const InputDecoration(
-                          labelText: 'Title',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _contentController,
-                        decoration: const InputDecoration(
-                          labelText: 'Content',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton(
-                            onPressed: _saveNote,
-                            child: const Text('Save'),
-                          ),
-                          const SizedBox(width: 10),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
+        drawer: DrowerWidgets().appBarDrow(context));
   }
 }
