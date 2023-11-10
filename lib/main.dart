@@ -7,35 +7,13 @@ import "views/login_view2.dart";
 import 'views/register_view.dart';
 import 'views/verify_email_view.dart';
 import 'views/notes-view.dart';
-import 'package:provider/provider.dart';
 import 'data/user_data.dart';
 
-// void main() {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   runApp(
-//     MaterialApp(
-//         title: 'Flutter Demo',
-//         theme: ThemeData(
-//           primarySwatch: Colors.blue,
-//         ),
-//         home: const HomePage(),
-//         routes: {
-//           './login/': (context) => const LoginView(),
-//           './register/': (context) => const RegisterView(),
-//           './verify-email/': (context) => const VerifyEmailView(),
-//           './notes-view/': (context) => const NotesView(),
-//         }),
-//   );
-// }
-
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await UserData.init();
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => UserDataProvider()),
-      ],
-      child: MaterialApp(
+    MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -46,9 +24,7 @@ void main() {
           './register/': (context) => const RegisterView(),
           './verify-email/': (context) => const VerifyEmailView(),
           './notes-view/': (context) => const NotesView(),
-        },
-      ),
-    ),
+        }),
   );
 }
 
@@ -73,27 +49,6 @@ class HomePage extends StatelessWidget {
                 return const LoginView();
               }
             }
-
-            // if (user?.emailVerified ?? false) {
-            //   print(user);
-            //   return const Text('done');
-            // } else {
-            //   return Column(
-            //     children: [
-            //       const Text('Please verify your email address.'),
-            //       TextButton(
-            //         onPressed: () {
-            //           Navigator.of(context).push(
-            //             MaterialPageRoute(
-            //               builder: (context) => const VerifyEmailView(),
-            //             ),
-            //           );
-            //         },
-            //         child: const Text('Verify Email'),
-            //       ),
-            //     ],
-            //   );
-            // }
             return const LoginView();
           default:
             return const CircularProgressIndicator();

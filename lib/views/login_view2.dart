@@ -38,7 +38,7 @@ class _LoginViewState extends State<LoginView> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('My Notes'),
       ),
       body: Center(
         child: Column(
@@ -79,16 +79,12 @@ class _LoginViewState extends State<LoginView> {
                         email: email,
                         password: password,
                       );
+                      await UserData.setEmail(email);
                       print('user data');
                       print(userCredentials);
                       // create a userdata obj
-                      final userData = UserData(userCredentials.user?.email,
-                          userCredentials.user?.displayName);
 
-                      // use provider to update the user data
-                      context.read<UserDataProvider>().updateUserData(userData);
-
-                      showAlertDialog(context, 'Success', 'Logged in',
+                      showAlertDialog(context, 'Wait', 'Logging in...',
                           showProgress: true);
                       Future.delayed(const Duration(seconds: 1), () {
                         final user = FirebaseAuth.instance.currentUser;

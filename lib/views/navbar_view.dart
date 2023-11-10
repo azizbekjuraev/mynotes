@@ -6,9 +6,8 @@ import '../data/user_data.dart';
 
 class DrowerWidgets {
   Widget appBarDrow(BuildContext context) {
-    // final userData = context.watch<UserData>();
-    // print('userdataaaaa');
-    // print(userData);
+    final userEmail = UserData.getUserEmail();
+    final displayName = UserData.getDisplayName();
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -16,10 +15,10 @@ class DrowerWidgets {
           UserAccountsDrawerHeader(
             accountName: Row(
               children: [
-                Text('Account Name'),
+                if (displayName != null) Text(displayName),
               ],
             ),
-            accountEmail: Text('Account Email'),
+            accountEmail: Text(userEmail as String),
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Image.network(

@@ -1,23 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserData {
-  final String? email;
-  final String? displayName;
+  static late SharedPreferences _preferences;
 
-  UserData(this.email, this.displayName);
+  static const _keyEmail = 'email';
+  static const _displayName = 'displayName';
 
-  @override
-  String toString() {
-    return 'UserData(email: $email, displayName: $displayName)';
-  }
-}
+  static Future init() async =>
+      _preferences = await SharedPreferences.getInstance();
 
-class UserDataProvider extends ChangeNotifier {
-  UserData? userData;
+  static Future setEmail(String email) async =>
+      await _preferences.setString(_keyEmail, email);
 
-  void updateUserData(UserData newData) {
-    userData = newData;
-    notifyListeners();
-  }
+  static String? getUserEmail() => _preferences.getString(_keyEmail);
+
+  static Future setDisplayName(String displayName) async =>
+      await _preferences.setString(_displayName, displayName);
+
+  static String? getDisplayName() => _preferences.getString(_displayName);
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_options.dart';
 import '../utils/show_alert_dialog.dart';
+import '../data/user_data.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -16,11 +17,13 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+  late final TextEditingController _displayName;
 
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
+    _displayName = TextEditingController();
     super.initState();
   }
 
@@ -28,6 +31,7 @@ class _RegisterViewState extends State<RegisterView> {
   void dispose() {
     _email.dispose();
     _password.dispose();
+    _displayName.dispose();
     super.dispose();
   }
 
@@ -73,19 +77,34 @@ class _RegisterViewState extends State<RegisterView> {
                         obscureText: true,
                       ),
                       height,
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Name',
+                        ),
+                        controller: _displayName,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        obscureText: true,
+                      ),
+                      height,
                       TextButton(
                         child: const Text('Register'),
                         onPressed: () async {
+                          final displayName = _displayName.text;
                           final email = _email.text;
                           final password = _password.text;
                           try {
-                            await FirebaseAuth.instance
+                            final userCredential = await FirebaseAuth.instance
                                 .createUserWithEmailAndPassword(
                               email: email,
                               password: password,
                             );
-                            // FirebaseAuth.instance.currentUser!.emailVerified ==
-                            //     true;
+
+                            await userCredential.user
+                                ?.updateProfile(displayName: displayName);
+                            await userCredential.user?.reload();
+                            await UserData.setDisplayName(displayName);
+
                             showAlertDialog(context, 'Success',
                                 'User registered! Redirecting to verification page...');
                             Future.delayed(const Duration(seconds: 3), () {
