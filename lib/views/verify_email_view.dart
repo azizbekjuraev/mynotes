@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 import '../utils/show_alert_dialog.dart';
 import 'dart:async'; // Import the dart:async package
 
@@ -44,8 +45,11 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                   final user = FirebaseAuth.instance.currentUser;
                   await user?.sendEmailVerification();
                   verificationSent = !verificationSent;
-                  showAlertDialog(context, 'Success',
-                      'Verification link has been sent to your email address!');
+                  showAlertDialog(
+                      context,
+                      title: 'Success',
+                      'Verification link has been sent to your email address!',
+                      toastType: ToastificationType.success);
 
                   // Start a 30-second timer
                   _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -58,7 +62,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                     });
                   });
                 } catch (e) {
-                  showAlertDialog(context, 'Error', "$e");
+                  showAlertDialog(context, "$e");
                 }
               },
               child: const Text('Send email verification'),

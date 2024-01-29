@@ -1,10 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../utils/show_alert_dialog.dart';
+import 'package:mynotes/utils/show_alert_dialog.dart';
 import 'package:provider/provider.dart';
-import '../data/user_data.dart';
+import 'package:toastification/toastification.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -16,6 +14,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -31,6 +30,97 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  Future<void> _signInWithEmailAndPassword() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      final String email = _email.text.trim();
+      final String password = _password.text;
+
+      if (email.isEmpty) {
+        showAlertDialog(context, 'Elektron pochtangizni kiriting...',
+            toastType: ToastificationType.warning);
+        return;
+      } else if (password.isEmpty) {
+        showAlertDialog(context, 'Parolingizni kiriting....',
+            toastType: ToastificationType.warning);
+        return;
+      }
+      // Move the actual sign-in code inside the try block
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // on success
+      if (!context.mounted) return;
+      showAlertDialog(
+          context,
+          title: "Xush kelibsiz!",
+          "Tizimga kirdingiz...",
+          toastType: ToastificationType.success,
+          toastAlignment: Alignment.bottomCenter,
+          margin: const EdgeInsets.only(bottom: 35.0));
+
+      Navigator.pushNamed(context, "./notes-view/");
+    } on FirebaseAuthException catch (e) {
+      // Handle specific FirebaseAuthExceptions
+      if (e.code == 'too-many-requests') {
+        if (!context.mounted) return;
+        showAlertDialog(
+          context,
+          "Juda koʻp so'rovlar yubordingiz, parolni tekshirib, qaytadan urinib ko'ring...",
+        );
+      }
+      if (e.code == 'invalid-email') {
+        if (!context.mounted) return;
+        showAlertDialog(
+          context,
+          "Iltimos, elektron pochtani to'g'ri to'ldiring...",
+        );
+      }
+      if (e.code == 'invalid-credential') {
+        if (!context.mounted) return;
+        showAlertDialog(
+          context,
+          "Parolni to'g'ri to'ldiring...",
+        );
+      }
+      if (e.code == 'user-not-found') {
+        if (!context.mounted) return;
+        showAlertDialog(context, 'Foydalanuvchi topilmadi...');
+      } else if (e.code == 'wrong-password') {
+        if (!context.mounted) return;
+        showAlertDialog(
+          context,
+          "Parolingiz noto'g'ri, qayta urinib ko'ring...",
+        );
+      } else if (e.code == 'network-request-failed') {
+        if (!context.mounted) return;
+        showAlertDialog(
+          context,
+          "Sizda to'g'ri tarmoq ulanishi yo'q...",
+        );
+      } else if (e.code == 'email-already-in-use') {
+        if (!context.mounted) return;
+        showAlertDialog(
+          context,
+          'Bu E-pochta manzili allaqachon boshqa hisobda ishlatilmoqda...',
+        );
+      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        if (!context.mounted) return;
+        showAlertDialog(
+            context, "Elektron pochta yoki parol noto'g'ri kiritildi...");
+      }
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const height = SizedBox(
@@ -38,89 +128,56 @@ class _LoginViewState extends State<LoginView> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Notes'),
+        title: const FittedBox(child: Text('Bloknot')),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Login'),
-            height,
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
-              keyboardType: TextInputType.emailAddress,
-              controller: _email,
-              enableSuggestions: false,
-              autocorrect: false,
-            ),
-            height,
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
-              controller: _password,
-              enableSuggestions: false,
-              autocorrect: false,
-              obscureText: true,
-            ),
-            height,
-            Column(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
-                  child: const Text('Login'),
-                  onPressed: () async {
-                    try {
-                      final email = _email.text;
-                      final password = _password.text;
-                      final userCredentials = await FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
-                      await UserData.setEmail(email);
-                      print('user data');
-                      print(userCredentials);
-                      // create a userdata obj
-
-                      showAlertDialog(context, 'Wait', 'Logging in...',
-                          showProgress: true);
-                      Future.delayed(const Duration(seconds: 1), () {
-                        final user = FirebaseAuth.instance.currentUser;
-                        if (user?.emailVerified == true) {
-                          Navigator.pushNamed(context, './notes-view/');
-                        } else {
-                          Navigator.pushNamed(context, './verify-email/');
-                        }
-                      });
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                        showAlertDialog(context, 'Error', 'User not found!');
-                      } else if (e.code == 'wrong-password') {
-                        showAlertDialog(context, 'Error',
-                            'Your password is incorrect, try again!');
-                      } else if (e.code == 'network-request-failed') {
-                        showAlertDialog(context, 'Network Request Failed.',
-                            'You do not have a proper network connection.');
-                      } else if (e.code == 'email-already-in-use') {
-                        showAlertDialog(context, "Error",
-                            'The email address is already in use by another account.');
-                      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-                        showAlertDialog(
-                            context, "Error", "Register first, then log in!");
-                      }
-                    }
-                  },
+                const Text(
+                  'Tizimga kirish',
+                  style: TextStyle(fontSize: 30),
                 ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, './register/');
-                    },
-                    child: const Text('Not registered yet? Register here!'))
+                height,
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Elektron pochta',
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _email,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                ),
+                height,
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Parol',
+                  ),
+                  controller: _password,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  obscureText: true,
+                ),
+                height,
+                Column(
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        FocusScope.of(context).unfocus();
+                        await _signInWithEmailAndPassword();
+                      },
+                      child: isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Kirish'),
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );

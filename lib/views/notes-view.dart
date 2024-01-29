@@ -59,7 +59,6 @@ class _NotesComponentState extends State<NotesView> {
           title: const Text("Edit Note"),
           content: SizedBox(
             width: 300,
-            height: 200,
             child: Column(
               children: [
                 TextField(
@@ -134,7 +133,7 @@ class _NotesComponentState extends State<NotesView> {
                   background: Container(
                     color: Colors.red,
                     alignment: Alignment.centerRight,
-                    padding: EdgeInsets.only(right: 20),
+                    padding: const EdgeInsets.only(right: 10),
                     child: Icon(
                       Icons.delete,
                       color: Colors.white,

@@ -31,13 +31,13 @@ class DrowerWidgets {
             ),
             otherAccountsPictures: [
               IconButton(
-                icon: Icon(Icons.cancel),
+                icon: const Icon(Icons.cancel),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
             ],
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.blue,
               image: DecorationImage(
                 fit: BoxFit.fill,
@@ -47,39 +47,39 @@ class DrowerWidgets {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Favorites'),
-            onTap: () => null,
+            leading: const Icon(Icons.favorite),
+            title: const Text('Favorites'),
+            onTap: () {},
           ),
           ListTile(
-            leading: Icon(Icons.person),
-            title: Text('Friends'),
-            onTap: () => null,
+            leading: const Icon(Icons.person),
+            title: const Text('Friends'),
+            onTap: () {},
           ),
           ListTile(
-            leading: Icon(Icons.share),
-            title: Text('Share'),
-            onTap: () => null,
+            leading: const Icon(Icons.share),
+            title: const Text('Share'),
+            onTap: () {},
           ),
-          ListTile(
+          const ListTile(
             leading: Icon(Icons.notifications),
             title: Text('Request'),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            onTap: () => null,
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {},
           ),
           ListTile(
-            leading: Icon(Icons.description),
-            title: Text('Policies'),
-            onTap: () => null,
+            leading: const Icon(Icons.description),
+            title: const Text('Policies'),
+            onTap: () {},
           ),
           const Divider(),
           ListTile(
-            title: Text('Exit'),
-            leading: Icon(Icons.exit_to_app),
+            title: const Text('Exit'),
+            leading: const Icon(Icons.exit_to_app),
             onTap: () async {
               try {
                 showSignOutConfirmationDialog(context);

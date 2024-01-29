@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:toastification/toastification.dart';
 import '../firebase_options.dart';
 import '../utils/show_alert_dialog.dart';
 import '../data/user_data.dart';
@@ -105,26 +106,29 @@ class _RegisterViewState extends State<RegisterView> {
                             await userCredential.user?.reload();
                             await UserData.setDisplayName(displayName);
 
-                            showAlertDialog(context, 'Success',
-                                'User registered! Redirecting to verification page...');
+                            showAlertDialog(
+                                context,
+                                title: 'Success',
+                                'User registered! Redirecting to verification page...',
+                                toastType: ToastificationType.success);
                             Future.delayed(const Duration(seconds: 3), () {
                               Navigator.pushNamed(context, './verify-email/');
                             });
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'network-request-failed') {
-                              showAlertDialog(
-                                  context,
-                                  'Network Request Failed, Try Again Later',
-                                  'You do not have a proper network connection.');
+                              // showAlertDialog(
+                              //     context,
+                              //     'Network Request Failed, Try Again Later',
+                              //     'You do not have a proper network connection.');
                             } else if (e.code == 'weak-password') {
-                              showAlertDialog(context, 'Error',
-                                  'Password should be at least 6 characters');
+                              // showAlertDialog(context, 'Error',
+                              //     'Password should be at least 6 characters');
                             } else if (e.code == 'email-already-in-use') {
-                              showAlertDialog(context, 'Error',
-                                  'The email address is already in use by another account.');
+                              // showAlertDialog(context, 'Error',
+                              //     'The email address is already in use by another account.');
                             } else {
-                              showAlertDialog(context, 'Error',
-                                  'Invalid email address, make sure its correct!');
+                              // showAlertDialog(context, 'Error',
+                              //     'Invalid email address, make sure its correct!');
                             }
                           }
                         },

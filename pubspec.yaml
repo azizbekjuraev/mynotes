@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^4.12.2
   shared_preferences: ^2.2.2
   flutter_telegram_login: 0.0.2
+  toastification: ^1.2.0
 
 dev_dependencies:
   flutter_test:
